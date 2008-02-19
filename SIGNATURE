@@ -1,0 +1,44 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.55.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 0bfbf5e1493df6adde8ef7623762ec37f73cac68 Changes
+SHA1 97923ebb093d481bbbb6af3b03b36b6cbbed0c67 MANIFEST
+SHA1 a506dbf8d638c62bb7ff84dc1f1495215ff65848 META.yml
+SHA1 e16457196d4eb72d5ca1c7a6cea4b7232da1293a Makefile.PL
+SHA1 603bb9de29fb8cba7f13409c546750972eff645d inc/Module/AutoInstall.pm
+SHA1 78edb89a439463e44c33a72bbee84c54d0dc8aaf inc/Module/Install.pm
+SHA1 ae32c02b539901de91f06366ce9bdbb7a7bd040b inc/Module/Install/AutoInstall.pm
+SHA1 8ea4e37df83fd0c1c050be5c8da75545c3828d9b inc/Module/Install/Base.pm
+SHA1 1da6031583c32f0d1ec073b8376102fc51427dcc inc/Module/Install/Can.pm
+SHA1 b779375b90c16af2f31f38a1dd2b5df223c7f2fb inc/Module/Install/Fetch.pm
+SHA1 6bf0d0d100b94d1a2ce64d010c8813dec26ac480 inc/Module/Install/Include.pm
+SHA1 2054450e1e9c1dd8056362bf4a64ae70d5d71476 inc/Module/Install/Makefile.pm
+SHA1 5d6189b2cad15cf9932a28faafd55130c8247e83 inc/Module/Install/Metadata.pm
+SHA1 02af973fae2ac3531fa6b704574b2b8cb2a08148 inc/Module/Install/Win32.pm
+SHA1 3a2eab96e91cca8d99938cda7791759ae9d97b3a inc/Module/Install/WriteAll.pm
+SHA1 1abe49a2ded1f60e9c4c1aa23d12a9630f217322 lib/autobox/Closure/Attributes.pm
+SHA1 87a9e6a9287759fc0f2322b349d078b124734214 t/000-load.t
+SHA1 c613500f3d5812eec47a90ebd9b3b2f324372883 t/001-synopsis.t
+SHA1 42181fbb9d6264bab2d20b55478fff4cce62fb2c t/002-share.t
+SHA1 27f81716d74d42b7922870df4774f5f9d60df924 t/003-separate.t
+SHA1 d79aa552a33415d47eb8d7587977461d5e87e0df t/900-bugs.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.7 (Darwin)
+
+iD8DBQFHuoF4sxfQtHhyRPoRArXAAJwIwFvmoATaOjlvw35pTcDDlXOTGACgnaJv
+bLILXdhzDqIbralmbi96wgA=
+=d9Ct
+-----END PGP SIGNATURE-----
