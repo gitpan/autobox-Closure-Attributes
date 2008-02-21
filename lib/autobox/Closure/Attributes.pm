@@ -5,10 +5,10 @@ use warnings;
 use parent 'autobox';
 
 sub import {
-    shift->SUPER::import(CODE => 'Closure::Attributes::Methods');
+    shift->SUPER::import(CODE => 'autobox::Closure::Attributes::Methods');
 }
 
-package Closure::Attributes::Methods;
+package autobox::Closure::Attributes::Methods;
 use PadWalker;
 
 sub AUTOLOAD {
@@ -32,11 +32,11 @@ autobox::Closure::Attributes - closures are objects are closures
 
 =head1 VERSION
 
-Version 0.01 released 17 Feb 08
+Version 0.02 released 21 Feb 08
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -44,7 +44,7 @@ our $VERSION = '0.01';
 
     sub accgen {
         my $n = shift;
-        return sub { $n += shift }
+        return sub { $n += shift || 1 }
     }
 
     my $from_3 = accgen(3);
@@ -111,7 +111,7 @@ Shawn M Moore, C<< <sartak at gmail.com> >>
 
 L<autobox>, L<PadWalker>
 
-L</WHAT?> from Anton van Straaten: L<http://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03277.html>
+The L</WHAT?> section is from Anton van Straaten: L<http://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03277.html>
 
 =head1 BUGS
 
@@ -123,6 +123,24 @@ L</WHAT?> from Anton van Straaten: L<http://people.csail.mit.edu/gregs/ll1-discu
     $code->x # CODE(0xDEADBEEF) does not close over $x
 
 This happens because Perl optimizes away the capturing of unused variables.
+
+    my $code = do {
+        my @primes = qw(2 3 5 7);
+        sub { $primes[ $_[0] ] }
+    };
+
+    $code->'@primes'(1) # Perl complains
+
+    my $method = '@primes';
+    $code->$method(1) # autobox complains
+
+    $code->can('@primes')->($code, 1) # can complains
+
+    $code->ARRAY_primes(1) # Sartak complains
+
+    $code->autobox::Closure::Attributes::Array::primes(1) # user complains
+
+I just can't win here. Ideas?
 
 Please report any other bugs through RT: email
 C<bug-autobox-closure-attributes at rt.cpan.org>, or browse

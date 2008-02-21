@@ -19,4 +19,5 @@ t/000-load.t
 t/001-synopsis.t
 t/002-share.t
 t/003-separate.t
+t/004-new-capture.t
 t/900-bugs.t
