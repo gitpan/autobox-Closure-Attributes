@@ -3,6 +3,7 @@ package autobox::Closure::Attributes;
 use strict;
 use warnings;
 use parent 'autobox';
+our $VERSION = '0.03';
 
 sub import {
     shift->SUPER::import(CODE => 'autobox::Closure::Attributes::Methods');
@@ -15,16 +16,28 @@ sub AUTOLOAD {
     my $code = shift;
     (my $attr = our $AUTOLOAD) =~ s/.*:://;
 
-    $attr = "\$$attr"; # this will become smarter soon
+    # we want the scalar unless the method name already a sigil
+    $attr = "\$$attr" unless $attr =~ /^[\$\@\%\&\*]/;
 
     my $closed_over = PadWalker::closed_over($code);
     exists $closed_over->{$attr}
         or Carp::croak "$code does not close over $attr";
 
-    return ${ $closed_over->{$attr} } = shift if @_;
+    my $ref = ref $closed_over->{$attr};
+
+    if (@_) {
+        return @{ $closed_over->{$attr} } = @_ if $ref eq 'ARRAY';
+        return %{ $closed_over->{$attr} } = @_ if $ref eq 'HASH';
+        return ${ $closed_over->{$attr} } = shift;
+    }
+
+    return $closed_over->{$attr} if $ref eq 'HASH' || $ref eq 'ARRAY';
     return ${ $closed_over->{$attr} };
 }
 
+1;
+
+__END__
 
 =head1 NAME
 
@@ -32,11 +45,7 @@ autobox::Closure::Attributes - closures are objects are closures
 
 =head1 VERSION
 
-Version 0.02 released 21 Feb 08
-
-=cut
-
-our $VERSION = '0.02';
+Version 0.03 released 16 May 08
 
 =head1 SYNOPSIS
 
@@ -81,9 +90,34 @@ moment, Anton became enlightened.
 This module uses powerful tools to give your closures accessors for each of the
 closed-over variables. You can get I<and> set them.
 
-For now, you can get I<only> the scalars that are closed over. Once I think of
-a better interface for getting and setting arrays and hashes I'll add that.
-C<< $code->'@foo' >> is the easy part.
+You can get and set arrays and hashes too, though it's a little more annoying:
+
+    my $code = do {
+        my ($scalar, @array, %hash);
+        sub { return ($scalar, @array, %hash) }
+    };
+
+    $code->scalar # works as normal
+
+    my $array_method = '@array';
+    $code->$array_method(1, 2, 3); # set @array to (1, 2, 3)
+    $code->$array_method; # [1, 2, 3]
+
+    my $hash_method = '%hash';
+    $code->$hash_method(foo => 1, bar => 2); # set %hash to (foo => 1, bar => 2)
+    $code->$hash_method; # { foo => 1, bar => 2 }
+
+If you're feeling particularly obtuse, you could do these more concisely:
+
+    $code->${\ '%hash' }(foo => 1, bar => 2);
+    $code->${\ '@array' }
+
+I recommend instead keeping your hashes and arrays in scalar variables if
+possible.
+
+The effect of L<autobox> is lexical, so you can localize the nastiness to a
+particular section of code -- these mysterious closu-jects will revert to their
+inert state after L<autobox>'s scope ends.
 
 =head1 HOW DOES IT WORK?
 
@@ -91,10 +125,12 @@ Go ahead and read the source code of this, it's not very long.
 
 L<autobox> lets you call methods on coderefs (or any other scalar).
 
-L<PadWalker> will let you see and change the closed-over variables of a coderef .
+L<PadWalker> will let you see and change the closed-over variables of a coderef
+.
 
-C<AUTOLOAD> is really just an accessor. It's just harder to manipulate the
-"attributes" of a closure-based object than it is for hash-based objects.
+L<AUTOLOAD|perlsub/"Autoloading"> is really just an accessor. It's just harder
+to manipulate the "attributes" of a closure-based object than it is for
+hash-based objects.
 
 =head1 WHY WOULD YOU DO THIS?
 
@@ -124,36 +160,16 @@ The L</WHAT?> section is from Anton van Straaten: L<http://people.csail.mit.edu/
 
 This happens because Perl optimizes away the capturing of unused variables.
 
-    my $code = do {
-        my @primes = qw(2 3 5 7);
-        sub { $primes[ $_[0] ] }
-    };
-
-    $code->'@primes'(1) # Perl complains
-
-    my $method = '@primes';
-    $code->$method(1) # autobox complains
-
-    $code->can('@primes')->($code, 1) # can complains
-
-    $code->ARRAY_primes(1) # Sartak complains
-
-    $code->autobox::Closure::Attributes::Array::primes(1) # user complains
-
-I just can't win here. Ideas?
-
 Please report any other bugs through RT: email
 C<bug-autobox-closure-attributes at rt.cpan.org>, or browse
 L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=autobox-Closure-Attributes>.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007 Shawn M Moore.
+Copyright 2007-2008 Shawn M Moore.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
-
-1;
 
