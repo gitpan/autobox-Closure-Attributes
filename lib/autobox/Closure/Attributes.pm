@@ -1,9 +1,8 @@
-#!perl
 package autobox::Closure::Attributes;
 use strict;
 use warnings;
-use parent 'autobox';
-our $VERSION = '0.03';
+use base 'autobox';
+our $VERSION = '0.04';
 
 sub import {
     shift->SUPER::import(CODE => 'autobox::Closure::Attributes::Methods');
@@ -42,10 +41,6 @@ __END__
 =head1 NAME
 
 autobox::Closure::Attributes - closures are objects are closures
-
-=head1 VERSION
-
-Version 0.03 released 16 May 08
 
 =head1 SYNOPSIS
 
@@ -141,7 +136,7 @@ hash-based objects.
 
 =head1 AUTHOR
 
-Shawn M Moore, C<< <sartak at gmail.com> >>
+Shawn M Moore, C<sartak@gmail.com>
 
 =head1 SEE ALSO
 
@@ -160,13 +155,9 @@ The L</WHAT?> section is from Anton van Straaten: L<http://people.csail.mit.edu/
 
 This happens because Perl optimizes away the capturing of unused variables.
 
-Please report any other bugs through RT: email
-C<bug-autobox-closure-attributes at rt.cpan.org>, or browse
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=autobox-Closure-Attributes>.
-
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007-2008 Shawn M Moore.
+Copyright 2007-2009 Shawn M Moore.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
